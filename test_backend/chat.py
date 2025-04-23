@@ -1,10 +1,10 @@
 from openai import OpenAI
 from scraper import get_page_info
 
-# 🔁 Використовуємо Groq API
+# 🔁 Підключення до OpenRouter API
 client = OpenAI(
-    base_url="https://api.groq.com/openai/v1",
-    api_key="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"  # Замінити на твій особистий ключ з https://console.groq.com/
+    base_url="https://openrouter.ai/api/v1",  # ✅ OpenRouter endpoint
+    api_key="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",  # 🔑 Встав сюди свій особистий API-ключ з https://openrouter.ai
 )
 
 # Отримання контексту зі сторінки
@@ -17,7 +17,7 @@ while True:
         break
 
     response = client.chat.completions.create(
-        model="mistral-saba-24b",  # 🔁 Замість gpt-3.5-turbo
+        model="mistralai/mistral-7b-instruct",  # ✅ Рекомендована безкоштовна модель
         messages=[
             {"role": "system", "content": "Ти помічник, який відповідає на основі тексту."},
             {"role": "user", "content": f"Контекст:\n{context}"},
