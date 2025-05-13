@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Чат із помічником</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-theme">
+  <!-- Меню зверху -->
+  <header class="top-nav">
+    <h1>Асистент</h1>
+    <nav>
+      <ul>
+        <li><a href="chat-history.html">Історія чатів</a></li>
+        <li><a href="#">Профіль</a></li>
+        <li><a href="#">Налаштування</a></li>
+        <li><a href="#">Про проєкт</a></li>
+        <li><a href="index.html">Вихід</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Основна частина: лівий та правий блок -->
+  <main class="chat-container">
+    <!-- Лівий блок: Аватар + коротка інформація -->
+    <aside class="chat-sidebar">
+      <img src="avatar.png" alt="Аватар" class="avatar-large" />
+      <div class="last-message">
+        <p><strong>Асистент:</strong><br />Вітаю! Чим можу допомогти?</p>
+      </div>
+    </aside>
+
+    <!-- Правий блок: Чат -->
+    <section class="chat-main">
+      <div class="chat-messages" id="chat-box">
+        <!-- Повідомлення додаються через JavaScript -->
+      </div>
+
+      <form class="chat-input" id="chat-form">
+        <input type="text" id="chat-input" placeholder="Напишіть повідомлення..." autocomplete="off" />
+        <button type="submit">Надіслати</button>
+        <button type="button" onclick="startVoice()">🎤</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="chat.js"></script>
+  <script src="avatar.js"></script>
+</body>
+</html>
