@@ -1,0 +1,191 @@
+/* === GLOBAL === */
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+  }
+  
+  /* === ГОЛОВНА СТОРІНКА === */
+  .main-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* HEADER */
+  .main-page header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #2a2a2a;
+  }
+  
+  .main-page nav a {
+    color: #ccc;
+    margin-right: 1.5rem;
+    text-decoration: none;
+  }
+  
+  .main-page nav a:hover {
+    color: #fff;
+  }
+  
+  .main-page .login-btn-top {
+    background-color: #2563eb;
+    color: #fff;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  /* MAIN CONTENT */
+  .main-page .main-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4rem 6rem;
+    flex: 1;
+    box-sizing: border-box;
+  }
+  
+  .main-page .text-section {
+    flex: 1;
+    min-width: 300px;
+    max-width: 600px;
+  }
+  
+  .main-page .text-section h1 {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+  }
+  
+  .main-page .text-section p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #ccc;
+  }
+  
+  .main-page .text-section .login-btn {
+    background-color: #333;
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    text-decoration: none;
+  }
+  
+  /* AVATAR */
+  .main-page .avatar-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+  }
+  
+  .main-page .avatar-section img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 16px;
+  }
+  
+  /* === AUTH PAGE === */
+  .auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  /* AUTH WRAPPER */
+  .auth-wrapper {
+    background-color: #2a2a2a;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* АВАТАР НА AUTH */
+  .auth-wrapper .avatar-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: contain;
+    margin-bottom: 1rem;
+  }
+  
+  /* FORMS */
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+  }
+  
+  .auth-form input {
+    padding: 0.7rem;
+    background-color: #3a3a3a;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.95rem;
+  }
+  
+  .auth-form button {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.7rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .auth-form button:hover {
+    background-color: #1e4ed8;
+  }
+  
+  .remember {
+    font-size: 0.85rem;
+    color: #ccc;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  .switch-text {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+  
+  .switch-text a {
+    color: #3b82f6;
+    text-decoration: none;
+  }
+  
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .main-page .main-content {
+      flex-direction: column;
+      padding: 2rem;
+      text-align: center;
+    }
+  
+    .main-page .avatar-section img {
+      max-width: 300px;
+    }
+  }
+  
