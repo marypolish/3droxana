@@ -1,24 +1,21 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
-from bson import ObjectId
 
-class FAQBase(BaseModel):
-    question: str
-    answer: str
-    keywords: List[str]
+class LinkBase(BaseModel):
+    title: str
+    url: str
+    description: str
     category: str
-    subcategory: str
-    source: Optional[str]
     tags: List[str]
     visible: bool = True
 
-class FAQCreate(FAQBase):
+class LinkCreate(LinkBase):
     pass
 
-class FAQUpdate(FAQBase):
+class LinkUpdate(LinkBase):
     pass
 
-class FAQOut(FAQBase):
+class LinkOut(LinkBase):
     id: str = Field(..., alias="_id")
 
     model_config = {
