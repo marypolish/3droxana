@@ -2,49 +2,47 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8" />
-  <title>Чат із помічником</title>
+  <title>Чат з помічником</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="dark-theme">
-  <!-- Меню зверху -->
+<body>
+  <!-- Верхнє меню -->
   <header class="top-nav">
-    <h1>Асистент</h1>
-    <nav>
+    <nav class="menu-bar">
       <ul>
-        <li><a href="chat-history.html">Історія чатів</a></li>
-        <li><a href="#">Профіль</a></li>
-        <li><a href="#">Налаштування</a></li>
-        <li><a href="#">Про проєкт</a></li>
-        <li><a href="index.html">Вихід</a></li>
+        <li><a href="index.html">Головна</a></li>
+        <li><a href="history.html">Історія чатів</a></li>
       </ul>
     </nav>
+    <a href="index.html" class="logout-btn">Вийти</a>
   </header>
+  
 
-  <!-- Основна частина: лівий та правий блок -->
+  <!-- Основна частина -->
   <main class="chat-container">
-    <!-- Лівий блок: Аватар + коротка інформація -->
-    <aside class="chat-sidebar">
-      <img src="avatar.png" alt="Аватар" class="avatar-large" />
-      <div class="last-message">
-        <p><strong>Асистент:</strong><br />Вітаю! Чим можу допомогти?</p>
+    <!-- Ліва панель -->
+    <aside class="left-panel">
+      <img src="avatar.png" alt="Аватар" class="avatar-img" />
+      <div class="assistant-message">
+        <p>Привіт! Чим можу допомогти?</p>
       </div>
     </aside>
 
-    <!-- Правий блок: Чат -->
-    <section class="chat-main">
-      <div class="chat-messages" id="chat-box">
-        <!-- Повідомлення додаються через JavaScript -->
+    <!-- Права панель -->
+    <section class="right-panel">
+      <div class="chat-window">
+        <!-- Повідомлення чату -->
+        <div class="chat-message assistant">Вітаю! Як я можу вам допомогти?</div>
+        <!-- Тут буде більше повідомлень динамічно -->
       </div>
 
-      <form class="chat-input" id="chat-form">
-        <input type="text" id="chat-input" placeholder="Напишіть повідомлення..." autocomplete="off" />
-        <button type="submit">Надіслати</button>
-        <button type="button" onclick="startVoice()">🎤</button>
-      </form>
+      <!-- Введення повідомлення -->
+      <div class="chat-input">
+        <input type="text" placeholder="Введіть повідомлення..." />
+        <button>🎤</button> <!-- Кнопка для голосу -->
+        <button>📩</button> <!-- Кнопка надсилання -->
+      </div>
     </section>
   </main>
-
-  <script src="chat.js"></script>
-  <script src="avatar.js"></script>
 </body>
 </html>
