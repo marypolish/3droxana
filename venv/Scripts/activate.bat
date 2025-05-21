@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=E:\Git\Новапапка1\3droxana\venv
+set VIRTUAL_ENV=D:\3D візуалізація\Проект_Мері_енд_Даша\3droxana\venv
 
 if not defined PROMPT set PROMPT=$P$G
 
