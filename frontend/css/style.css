@@ -100,7 +100,7 @@ body {
   
   .main-page .avatar-section img {
     width: 100%;
-    max-width:1300px;
+    max-width:400px;
     height: auto;
     object-fit: contain;
     border-radius: 16px;
