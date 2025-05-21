@@ -1,4 +1,7 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
 from backend.api import routes_faq
 from backend.api import routes_feedback
 from backend.api import routes_links
@@ -7,6 +10,25 @@ from backend.api import routes_users
 from backend.db.mongodb import connect_to_mongo, close_mongo_connection
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+@app.get("/", response_class=FileResponse)
+async def serve_frontend():
+    print("Serving index.html...")
+    return FileResponse(os.path.join("frontend", "pages", "index.html"))
+
+@app.get("/auth", response_class=FileResponse)
+async def serve_auth():
+    return FileResponse(os.path.join("frontend", "pages", "auth.html"))
+
+@app.get("/chat", response_class=FileResponse)
+async def serve_faq():
+    return FileResponse(os.path.join("frontend", "pages", "chat.html"))
+
+@app.get("/history", response_class=FileResponse)
+async def serve_faq():
+    return FileResponse(os.path.join("frontend", "pages", "history.html"))
 
 app.include_router(routes_faq.router)
 app.include_router(routes_feedback.router)
