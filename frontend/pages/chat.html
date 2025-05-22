@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Чат з помічником</title>
-  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="stylesheet" href="/static/css/chat.css" />
 </head>
 <body>
   <!-- Верхнє меню -->
@@ -38,11 +38,46 @@
 
       <!-- Введення повідомлення -->
       <div class="chat-input">
-        <input type="text" placeholder="Введіть повідомлення..." />
-        <button>🎤</button> <!-- Кнопка для голосу -->
-        <button>📩</button> <!-- Кнопка надсилання -->
+        <textarea id="user-input" placeholder="Введіть повідомлення..."></textarea>
+        <button id="voice-btn">🎤</button>
+        <button id="send-btn">📩</button>
       </div>
     </section>
   </main>
 </body>
+<script>
+  document.getElementById("send-btn").addEventListener("click", sendMessage);
+  document.getElementById("user-input").addEventListener("keypress", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault(); // Щоб не вставлявся новий рядок
+    sendMessage();
+  }
+  });
+
+  function sendMessage() {
+    const input = document.getElementById("user-input");
+    const message = input.value.trim();
+    if (message === "") return;
+
+    const chatWindow = document.querySelector(".chat-window");
+
+    // Додаємо повідомлення користувача
+    const userMsg = document.createElement("div");
+    userMsg.className = "chat-message user";
+    userMsg.textContent = message;
+    chatWindow.appendChild(userMsg);
+
+    // (Опціонально) Додаємо відповідь асистента (імітація)
+    const assistantMsg = document.createElement("div");
+    assistantMsg.className = "chat-message assistant";
+    assistantMsg.textContent = "Дякую за повідомлення!"; // можна змінити на динамічне
+    chatWindow.appendChild(assistantMsg);
+
+    input.value = "";
+
+    // Прокручуємо вниз чат
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
+</script>
+
 </html>
