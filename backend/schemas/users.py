@@ -5,12 +5,18 @@ class UserBase(BaseModel):
     tgNick: str
     email: EmailStr
 
-class UserCreate(UserBase):
-    pass
+class UserCreate(BaseModel):
+    username: str
+    email: EmailStr
+    password: str
 
 class UserUpdate(BaseModel):
     tgNick: str | None = None
     email: EmailStr | None = None
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
 
 class UserOut(UserBase):
     id: str = Field(..., alias="_id")

@@ -8,8 +8,17 @@ from backend.api import routes_links
 from backend.api import routes_sessions
 from backend.api import routes_users
 from backend.db.mongodb import connect_to_mongo, close_mongo_connection
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # або ["*"] для всіх
+    allow_credentials=True,
+    allow_methods=["*"],  # або ['POST', 'GET'] тощо
+    allow_headers=["*"],
+)
 
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
