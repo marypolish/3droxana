@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..db.mongodb import get_database
 from ..models import users as user_model
 from ..schemas import users as user_schema
+from ..schemas.users import UserLogin
 
 router = APIRouter(prefix="/api/users", tags=["Users"])
 
@@ -16,9 +17,23 @@ async def read_user(id: str, db=Depends(get_database)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@router.post("/", response_model=str)
-async def create_user(user: user_schema.UserCreate, db=Depends(get_database)):
-    return await user_model.create_user(db, user.dict())
+@router.post("/login")
+async def login_user(login: UserLogin, db=Depends(get_database)):
+    user = await user_model.get_user_by_credentials(db, login.email, login.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Невірна пошта або пароль")
+    return {"message": "Успішний вхід", "user": user}
+
+@router.post("/register", response_model=str)
+async def register_user(user: user_schema.UserCreate, db=Depends(get_database)):
+    # Перевірка, чи email вже існує
+    existing_user = await db["users"].find_one({"email": user.email})
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Користувач з таким email вже існує")
+
+    # Зберігаємо користувача без хешування пароля
+    user_data = user.dict()
+    return await user_model.create_user(db, user_data)
 
 @router.put("/{id}")
 async def update_user(id: str, user: user_schema.UserUpdate, db=Depends(get_database)):

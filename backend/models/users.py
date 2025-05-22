@@ -15,6 +15,10 @@ async def get_user_by_id(db: AsyncIOMotorDatabase, id: str):
     user = await db[collection_name].find_one({"_id": ObjectId(id)})
     return serialize_user(user) if user else None
 
+async def get_user_by_credentials(db: AsyncIOMotorDatabase, email: str, password: str):
+    user = await db[collection_name].find_one({"email": email, "password": password})
+    return serialize_user(user) if user else None
+
 async def create_user(db: AsyncIOMotorDatabase, data: dict):
     result = await db[collection_name].insert_one(data)
     return str(result.inserted_id)

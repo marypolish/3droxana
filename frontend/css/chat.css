@@ -64,18 +64,18 @@ body {
   }
   
   .main-page .text-section {
-    flex: 1.4;
+    flex: 1;
     min-width: 300px;
-    max-width: 900px;
+    max-width: 600px;
   }
   
   .main-page .text-section h1 {
-    font-size: 2.9rem;
+    font-size: 2.8rem;
     margin-bottom: 1rem;
   }
   
   .main-page .text-section p {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     margin-bottom: 2rem;
     color: #ccc;
   }
@@ -86,7 +86,7 @@ body {
     padding: 0.7rem 1.5rem;
     border: none;
     border-radius: 8px;
-    font-size: 1.6rem;
+    font-size: 1rem;
     text-decoration: none;
   }
   
@@ -100,7 +100,7 @@ body {
   
   .main-page .avatar-section img {
     width: 100%;
-    max-width:600px;
+    max-width:400px;
     height: auto;
     object-fit: contain;
     border-radius: 16px;
@@ -125,8 +125,8 @@ body {
   }
   
   .auth-wrapper .avatar-img {
-    width: 240px;
-    height: 240px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
     object-fit: contain;
     margin-bottom: 1rem;
@@ -453,5 +453,54 @@ body {
 }
 
 
+.chat-message.user {
+    text-align: right;
+    background-color: #5e6954;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .chat-message.assistant {
+    text-align: left;
+    background-color: #3c3c3c;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+  }
 
+  .user-input {
+    width: 100%;
+    min-height: 50px;
+    max-height: 150px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #974e4e;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    resize: none;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #4a2323;
+  }
+  
+  .user-input:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 40px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 0px solid #c8b2b2;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    resize: vertical;
+    outline: none;
+    background-color: #5e6954;
+    box-shadow: 0 2px 6px rgba(246, 238, 238, 0.08);
+  }
   
