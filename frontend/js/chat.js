@@ -67,3 +67,4 @@ async function sendMessage() {
     chatWindow.appendChild(errorMsg);
   }
 }
+

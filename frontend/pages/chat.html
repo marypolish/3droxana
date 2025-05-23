@@ -50,53 +50,18 @@
   <script src="/static/js/chat.js"></script>
 </body>
 
-<!-- <script>
-  document.getElementById("send-btn").addEventListener("click", sendMessage);
-  document.getElementById("user-input").addEventListener("keypress", function (e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault(); // Щоб не вставлявся новий рядок
-    sendMessage();
-  }
-  });
+<script>
+  // Очистити localStorage при натисканні на кнопку "Вийти"
+document.querySelector(".logout-btn")?.addEventListener("click", function (e) {
+  // Очистити локальне сховище
+  localStorage.clear();
+  sessionStorage.clear(); // Якщо використовувалось
+  // За потреби: показати повідомлення або логування
+  console.log("Дані з локального сховища видалено");
 
-  function sendMessage() {
-    const input = document.getElementById("user-input");
-    const message = input.value.trim();
-    if (message === "") return;
-
-    const chatWindow = document.querySelector(".chat-window");
-
-    // Додаємо повідомлення користувача
-    const userMsg = document.createElement("div");
-    userMsg.className = "chat-message user";
-    userMsg.textContent = message;
-    chatWindow.appendChild(userMsg);
-
-    // (Опціонально) Додаємо відповідь асистента (імітація)
-    const assistantMsg = document.createElement("div");
-    assistantMsg.className = "chat-message assistant";
-    assistantMsg.textContent = "Дякую за повідомлення!"; // можна змінити на динамічне
-    chatWindow.appendChild(assistantMsg);
-
-    input.value = "";
-
-    // Прокручуємо вниз чат
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-  }
-<<<<<<< HEAD
-</script>  -->
-=======
-   // Очистити localStorage при натисканні на кнопку "Вийти"
-  document.querySelector(".logout-btn")?.addEventListener("click", function (e) {
-    // Очистити локальне сховище
-    localStorage.clear();
-    sessionStorage.clear(); // Якщо використовувалось
-    // За потреби: показати повідомлення або логування
-    console.log("Дані з локального сховища видалено");
-
-    
-  });
-</script>
->>>>>>> dc73fc1321aaba8ca0a6877a28e318cbcc1c6713
+  
+});
+</script> 
+   
 
 </html>
