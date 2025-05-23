@@ -22,9 +22,12 @@
   <main class="chat-container">
     <!-- Ліва панель -->
     <aside class="left-panel">
-      <img src="/static/images/avatar.png" alt="Аватар" class="avatar-img" />
+      
+      <video autoplay loop muted playsinline class="avatar-video" style="width: 300px; height: auto; object-fit: contain; border-radius: 15px;">
+        <source src="/avatar/animations/squinted1.mp4" type="video/mp4" />
+      </video>
       <div class="assistant-message">
-        <p>Привіт! Чим можу допомогти?</p>
+        <p id="assistant-text">Привіт! Чим можу допомогти?</p>
       </div>
     </aside>
 
@@ -32,7 +35,7 @@
     <section class="right-panel">
       <div class="chat-window">
         <!-- Повідомлення чату -->
-        <div class="chat-message assistant">Вітаю! Як я можу вам допомогти?</div>
+        <div class="chat-message assistant">Привіт! Чим можу допомогти?</div>
         <!-- Тут буде більше повідомлень динамічно -->
       </div>
 
@@ -44,8 +47,10 @@
       </div>
     </section>
   </main>
+  <script src="/static/js/chat.js"></script>
 </body>
-<script>
+
+<!-- <script>
   document.getElementById("send-btn").addEventListener("click", sendMessage);
   document.getElementById("user-input").addEventListener("keypress", function (e) {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -78,6 +83,6 @@
     // Прокручуємо вниз чат
     chatWindow.scrollTop = chatWindow.scrollHeight;
   }
-</script>
+</script>  -->
 
 </html>

@@ -8,6 +8,7 @@ class Message(BaseModel):
 
 class SessionBase(BaseModel):
     userId: str
+    name: str  # нове поле
     messages: List[Message]
     createdAt: datetime
     updatedAt: datetime
