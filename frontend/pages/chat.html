@@ -83,6 +83,20 @@
     // Прокручуємо вниз чат
     chatWindow.scrollTop = chatWindow.scrollHeight;
   }
+<<<<<<< HEAD
 </script>  -->
+=======
+   // Очистити localStorage при натисканні на кнопку "Вийти"
+  document.querySelector(".logout-btn")?.addEventListener("click", function (e) {
+    // Очистити локальне сховище
+    localStorage.clear();
+    sessionStorage.clear(); // Якщо використовувалось
+    // За потреби: показати повідомлення або логування
+    console.log("Дані з локального сховища видалено");
+
+    
+  });
+</script>
+>>>>>>> dc73fc1321aaba8ca0a6877a28e318cbcc1c6713
 
 </html>

@@ -1,337 +1,267 @@
 /* === GLOBAL === */
 body {
-    margin: 0;
-    font-family: "Segoe UI", sans-serif;
-    background-color: #1e1e1e;
-    color: #f0f0f0;
-  }
-  
-  /* === СПІЛЬНЕ МЕНЮ ДЛЯ ВСІХ СТОРІНОК === */
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #2a2a2a;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  }
-  
-  header nav {
-    display: flex;
-    gap: 1.5rem;
-  }
-  
-  header nav a {
-    color: #ccc;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.3s;
-  }
-  
-  header nav a:hover {
-    color: #ffffff;
-  }
-  
-  header .login-btn-top {
-    background-color: #2563eb;
-    color: #fff;
-    padding: 0.5rem 1.2rem;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s;
-  }
-  
-  header .login-btn-top:hover {
-    background-color: #1e4ed8;
-  }
-  
-  /* === ГОЛОВНА СТОРІНКА === */
-  .main-page {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  
-  .main-page .main-content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4rem 6rem;
-    flex: 1;
-    box-sizing: border-box;
-  }
-  
-  .main-page .text-section {
-    flex: 1.4;
-    min-width: 300px;
-    max-width: 900px;
-  }
-  
-  .main-page .text-section h1 {
-    font-size: 2.9rem;
-    margin-bottom: 1rem;
-  }
-  
-  .main-page .text-section p {
-    font-size: 1.4rem;
-    margin-bottom: 2rem;
-    color: #ccc;
-  }
-  
-  .main-page .text-section .login-btn {
-    background-color: #333;
-    color: white;
-    padding: 0.7rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.6rem;
-    text-decoration: none;
-  }
-  
-  .main-page .avatar-section {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 100%;
-  }
-  
-  .main-page .avatar-section img {
-    width: 100%;
-    max-width:600px;
-    height: auto;
-    object-fit: contain;
-    border-radius: 16px;
-  }
-  
-  /* === AUTH PAGE === */
-  .auth-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  .auth-wrapper {
-    background-color: #2a2a2a;
-    padding: 2rem;
-    border-radius: 12px;
-    width: 320px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .auth-wrapper .avatar-img {
-    width: 240px;
-    height: 240px;
-    border-radius: 50%;
-    object-fit: contain;
-    margin-bottom: 1rem;
-  }
-  
-  .auth-form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 0.8rem;
-    margin-top: 0.5rem;
-  }
-  
-  .auth-form input {
-    padding: 0.7rem;
-    background-color: #3a3a3a;
-    border: none;
-    border-radius: 6px;
-    color: #fff;
-    font-size: 0.95rem;
-  }
-  
-  .auth-form button {
-    background-color: #2563eb;
-    color: white;
-    padding: 0.7rem;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .auth-form button:hover {
-    background-color: #1e4ed8;
-  }
-  
-  .remember {
-    font-size: 0.85rem;
-    color: #ccc;
-  }
-  
-  .hidden {
-    display: none;
-  }
-  
-  .switch-text {
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    color: #ccc;
-  }
-  
-  .switch-text a {
-    color: #3b82f6;
-    text-decoration: none;
-  }
-  
-  /* === СТОРІНКА ІСТОРІЇ ЧАТІВ === */
-  .history-page {
-    min-height: 100vh;
-    background-color: #1e1e1e;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .history-container {
-    max-width: 800px;
-    margin: 2rem auto;
-    background-color: #2b2b2b;
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    flex: 1;
-  }
-  
-  .history-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  
-  .history-header img {
-    width:100px;
-    height:100px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  
-  .history-header h2 {
-    margin: 0;
-    font-size: 1.8rem;
-  }
-  
-  .chat-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .chat-item {
-    padding: 1rem;
-    border-bottom: 1px solid #444;
-    cursor: pointer;
-  }
-  
-  .chat-item:hover {
-    background-color: #3a3a3a;
-  }
-  
-  .chat-time {
-    color: #aaa;
-    font-size: 0.9rem;
-  }
-  
-  .empty-message {
-    text-align: center;
-    color: #888;
-    margin-top: 2rem;
-    font-size: 1.1rem;
-  }
-  
-  /* === RESPONSIVE === */
-  @media (max-width: 768px) {
-    .main-page .main-content {
-      flex-direction: column;
-      padding: 2rem;
-      text-align: center;
-    }
-  
-    .main-page .avatar-section img {
-      max-width: 300px;
-    }
-  
-    header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    header nav {
-      flex-direction: column;
-      gap: 0.8rem;
-      margin-bottom: 1rem;
-    }
-  
-    .history-header {
-      flex-direction: column;
-      text-align: center;
-    }
-  }
-/* Оновлене верхнє меню в стилі як на зображенні */
-.top-nav {
-  background-color: #2a2a2a;
-  padding: 10px 30px;
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+}
+
+/* === СПІЛЬНЕ МЕНЮ ДЛЯ ВСІХ СТОРІНОК === */
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1rem 2rem;
+  background-color: #2a2a2a;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-.top-nav ul {
+header nav {
   display: flex;
-  gap: 30px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  gap: 1.5rem;
 }
 
-.top-nav li {
-  display: inline;
-}
-
-.top-nav a {
-  color: #ddd;
+header nav a {
+  color: #ccc;
   text-decoration: none;
-  font-size: 16px;
-  transition: color 0.3s ease;
+  font-size: 1rem;
+  transition: color 0.3s;
 }
 
-.top-nav a:hover {
-  color: #1abc9c;
+header nav a:hover {
+  color: #ffffff;
 }
 
-/* Стиль кнопки "Вийти" */
-.logout-btn {
-  background-color: #2d72f3;
+header .login-btn-top {
+  background-color: #2563eb;
+  color: #fff;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+header .login-btn-top:hover {
+  background-color: #1e4ed8;
+}
+
+/* === ГОЛОВНА СТОРІНКА === */
+.main-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Компенсація висоти фіксованого хедера */
+.main-page .main-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6rem 6rem 4rem 6rem; /* Додано зверху більше відступу */
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.main-page .text-section {
+  flex: 1.4;
+  min-width: 300px;
+  max-width: 900px;
+}
+
+.main-page .text-section h1 {
+  font-size: 2.9rem;
+  margin-bottom: 1rem;
+}
+
+.main-page .text-section p {
+  font-size: 1.4rem;
+  margin-bottom: 2rem;
+  color: #ccc;
+}
+
+.main-page .text-section .login-btn {
+  background-color: #333;
   color: white;
-  padding: 8px 16px;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.6rem;
+  text-decoration: none;
+}
+
+.main-page .avatar-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+}
+
+.main-page .avatar-section img {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
+/* === AUTH PAGE === */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding-top: 80px; /* Компенсація для фіксованого хедера */
+}
+
+.auth-wrapper {
+  background-color: #2a2a2a;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-wrapper .avatar-img {
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.auth-form input {
+  padding: 0.7rem;
+  background-color: #3a3a3a;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.auth-form button {
+  background-color: #2563eb;
+  color: white;
+  padding: 0.7rem;
+  border: none;
   border-radius: 6px;
   font-weight: bold;
-  border: none;
+  cursor: pointer;
+}
+
+.auth-form button:hover {
+  background-color: #1e4ed8;
+}
+
+.remember {
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.hidden {
+  display: none;
+}
+
+.switch-text {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.switch-text a {
+  color: #3b82f6;
   text-decoration: none;
-  transition: background-color 0.3s ease;
 }
 
-.logout-btn:hover {
-  background-color: #1e5ed4;
+/* === ІСТОРІЯ ЧАТІВ === */
+.history-page {
+  min-height: 100vh;
+  background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px; /* Компенсація */
 }
 
+.history-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  background-color: #2b2b2b;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  flex: 1;
+}
 
-/* Контейнер чату */
+.history-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.history-header img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.history-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.chat-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.chat-item {
+  padding: 1rem;
+  border-bottom: 1px solid #444;
+  cursor: pointer;
+}
+
+.chat-item:hover {
+  background-color: #3a3a3a;
+}
+
+.chat-time {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.empty-message {
+  text-align: center;
+  color: #888;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+}
+
+/* === ЧАТ === */
 .chat-container {
   display: flex;
-  height: calc(100vh - 60px); /* Висота без хедера */
+  height: calc(100vh - 80px);
+  padding-top: 80px; /* Компенсація */
 }
 
-/* Ліва панель з аватаром */
 .left-panel {
   width: 25%;
   background-color: #2b2b2b;
@@ -358,7 +288,6 @@ body {
   text-align: center;
 }
 
-/* Права панель з чатом */
 .right-panel {
   flex-grow: 1;
   display: flex;
@@ -368,7 +297,6 @@ body {
   background-color: #1e1e1e;
 }
 
-/* Вікно чату */
 .chat-window {
   flex-grow: 1;
   overflow-y: auto;
@@ -395,7 +323,6 @@ body {
   color: #000;
 }
 
-/* Поле введення */
 .chat-input {
   display: flex;
   align-items: center;
@@ -428,8 +355,34 @@ body {
   background-color: #16a085;
 }
 
-/* Адаптивність */
+/* === RESPONSIVE === */
 @media (max-width: 768px) {
+  .main-page .main-content {
+    flex-direction: column;
+    padding: 6rem 2rem 2rem 2rem;
+    text-align: center;
+  }
+
+  .main-page .avatar-section img {
+    max-width: 300px;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  header nav {
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .history-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
   .chat-container {
     flex-direction: column;
   }
@@ -451,7 +404,3 @@ body {
     max-width: 60%;
   }
 }
-
-
-
-  
