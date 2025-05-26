@@ -89,7 +89,8 @@
         const result = await response.json();
         if (response.ok) {
           alert("Вхід успішний!");
-          localStorage.setItem("user", JSON.stringify(result)); 
+          const user = result.user;
+          localStorage.setItem('user', JSON.stringify(user)); 
 
           // Перенаправити на сторінку чату
           window.location.href = "/chat";

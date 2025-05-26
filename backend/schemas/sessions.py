@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List
 from datetime import datetime
+from typing import Optional
 
 class Message(BaseModel):
     role: str  # "user" або "assistant"
@@ -9,9 +10,9 @@ class Message(BaseModel):
 class SessionBase(BaseModel):
     userId: str
     name: str  # нове поле
-    messages: List[Message]
-    createdAt: datetime
-    updatedAt: datetime
+    messages: Optional[List[Message]] = []
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+    updatedAt: datetime = Field(default_factory=datetime.utcnow)
 
 class SessionCreate(SessionBase):
     pass
@@ -25,5 +26,5 @@ class SessionOut(SessionBase):
 
     model_config = {
         "from_attributes": True,
-        "validate_by_name": True
+        "allow_population_by_field_name": True
     }

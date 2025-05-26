@@ -47,6 +47,7 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
+    link: str
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
