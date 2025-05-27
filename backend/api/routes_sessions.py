@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from ..db.mongodb import get_database
 from ..models import sessions as session_model
 from ..schemas import sessions as session_schema
+from datetime import datetime
+
 
 router = APIRouter(prefix="/api/sessions", tags=["Sessions"])
 
@@ -26,6 +28,9 @@ async def create_or_update_session(session: session_schema.SessionCreate, db=Dep
         "userId": session.userId,
         "name": session.name
     })
+
+    print(session.userId)
+    print(session.name)
 
     # Сконвертувати messages (Pydantic) у plain dicts
     new_messages_dicts = [m.dict() for m in session.messages]

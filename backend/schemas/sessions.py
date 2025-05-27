@@ -14,8 +14,11 @@ class SessionBase(BaseModel):
     createdAt: datetime = Field(default_factory=datetime.utcnow)
     updatedAt: datetime = Field(default_factory=datetime.utcnow)
 
-class SessionCreate(SessionBase):
-    pass
+class SessionCreate(BaseModel):
+    userId: str
+    name: str
+    messages: list[Message]
+    updatedAt: Optional[datetime] = None
 
 class SessionUpdate(BaseModel):
     messages: List[Message]

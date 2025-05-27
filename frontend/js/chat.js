@@ -13,7 +13,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   console.log("userId:", userId);
 
   let sessionId = localStorage.getItem("sessionId");
-  let sessionObj = sessionId ? JSON.parse(sessionId) : null;
+  let sessionObj = localStorage.getItem("sessionId");
 
   try {
     if (!sessionId) {
@@ -21,8 +21,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         alert("Некоректні дані користувача");
         return;
       }
-
-      // 1. Створення сесії, якщо ще не створено
+  
       const sessionResponse = await fetch(
         "http://localhost:8000/api/sessions",
         {
@@ -32,30 +31,34 @@ window.addEventListener("DOMContentLoaded", async () => {
           },
           body: JSON.stringify({
             userId: userId,
-            name: "Чат з FAQ", // або інша назва сесії
+            name: "Чат з FAQ",
             messages: [],
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           }),
         }
       );
-
+  
       if (!sessionResponse.ok) {
         throw new Error(`Не вдалося створити сесію: ${sessionResponse.status}`);
       }
+  
+      
+      sessionId = (await sessionResponse.text()).replace(/^"|"$/g, '');  // <-- OK
+      console.log(sessionId);
+      localStorage.setItem("sessionId", sessionId);
+      const sessionObj = localStorage.getItem("sessionId");
 
-      sessionId = await response.text(); // бекенд повертає id сесії як рядок
-      // Зберігаємо сесію у localStorage
-      localStorage.setItem("sessionId", JSON.stringify({ _id: sessionId }));
-      sessionObj = { _id: sessionId };
       console.log("Сесія створена:", sessionObj);
     } else {
+      sessionId = sessionId.replace(/^"|"$/g, '');
+      console.log(sessionId);
+      localStorage.setItem("sessionId", sessionId);
       console.log("Існуюча сесія:", sessionObj);
     }
+  
+    const sessionIdToFetch = sessionObj || sessionObj.id || sessionObj._id;
 
-    // Завантажуємо повідомлення сесії по ID
-    // Припускаємо, що sessionObj має _id або id, потрібно вказати правильний ідентифікатор
-    const sessionIdToFetch = sessionObj._id || sessionObj.id || sessionObj;
     const messagesRes = await fetch(
       `http://localhost:8000/api/sessions/${sessionIdToFetch}`
     );
@@ -63,16 +66,16 @@ window.addEventListener("DOMContentLoaded", async () => {
       throw new Error("Не вдалося отримати повідомлення сесії");
     }
     const sessionData = await messagesRes.json();
-
+  
     const chatWindow = document.querySelector(".chat-window");
     sessionData.messages.forEach((msg) => {
       const msgDiv = document.createElement("div");
       msgDiv.className =
         "chat-message " + (msg.role === "user" ? "user" : "assistant");
-      msgDiv.textContent = msg.content;
+      msgDiv.textContent = msg.text;  // ✅ виправлено
       chatWindow.appendChild(msgDiv);
     });
-
+  
     chatWindow.scrollTop = chatWindow.scrollHeight;
   } catch (err) {
     console.error("Помилка ініціалізації сесії:", err);
