@@ -8,6 +8,8 @@ import asyncio
 import traceback
 from httpx import Client
 import re
+from bson import ObjectId
+from datetime import datetime
 
 router = APIRouter(prefix="/api/faq", tags=["FAQ"])
 
@@ -44,6 +46,8 @@ async def delete_faq(id: str, db=Depends(get_database)):
 
 class ChatRequest(BaseModel):
     message: str
+    sessionId: str
+    userId: str
 
 class ChatResponse(BaseModel):
     response: str
@@ -51,8 +55,8 @@ class ChatResponse(BaseModel):
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
-    message = request.message.lower()
-    print("123")
+    message = request.message.strip()
+    session_id = request.sessionId
     # Пошук FAQ релевантних
     faqs = await faq_model.get_all_faqs(db)
     relevant = []
@@ -107,13 +111,37 @@ async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
         raise HTTPException(status_code=500, detail=f"Помилка при зверненні до OpenAI: {e}")
 
     answer = response.choices[0].message.content
-    print(answer)
-    # Пошук незалежно від регістру та пробілів
+
+    # Витягуємо основний текст і посилання
     main_text_match = re.search(r'(?i)основний\s*текст\s*:\s*(.+?)(?:\n\s*(емоція|посилання)\s*:)', answer, re.DOTALL)
     link_match = re.search(r'(?i)посилання\s*:\s*(.+)', answer)
 
     main_text = main_text_match.group(1).strip() if main_text_match else "Вибач, не вдалося отримати основний текст 😢"
     link = link_match.group(1).strip() if link_match else "немає"
 
+    # 3. Формуємо повідомлення для сесії
+    user_msg = {
+        "role": "user",
+        "text": message,
+        "timestamp": datetime.utcnow()
+    }
+    assistant_msg = {
+        "role": "assistant",
+        "text": main_text,
+        "timestamp": datetime.utcnow()
+    }
+
+    # 4. Оновлюємо сесію, додаючи повідомлення
+    update_result = await db["sessions"].update_one(
+        {"_id": ObjectId(session_id)},
+        {
+            "$push": {"messages": {"$each": [user_msg, assistant_msg]}},
+            "$set": {"updatedAt": datetime.utcnow()}
+        }
+    )
+    if update_result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Сесія не знайдена")
+
+    # 5. Відповідаємо фронтенду
     return ChatResponse(response=main_text, link=link)
     

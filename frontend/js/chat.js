@@ -120,8 +120,8 @@ window.addEventListener("DOMContentLoaded", async () => {
         },
         body: JSON.stringify({
           userId: userId,
-          sessionId: sessionObj._id || sessionObj.id || sessionObj,
-          message,
+          sessionId: sessionObj|| sessionObj.id || sessionObj._id ,
+          message: message,
         }),
       });
 
