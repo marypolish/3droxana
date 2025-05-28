@@ -3,7 +3,7 @@ from ..db.mongodb import get_database
 from ..models import sessions as session_model
 from ..schemas import sessions as session_schema
 from datetime import datetime
-
+from bson import ObjectId
 
 router = APIRouter(prefix="/api/sessions", tags=["Sessions"])
 
@@ -56,6 +56,24 @@ async def create_or_update_session(session: session_schema.SessionCreate, db=Dep
 
     return await session_model.create_session(db, session_data)
 
+@router.post("/newSession", response_model=str)
+async def create_or_update_session(session: session_schema.SessionCreate, db=Depends(get_database)):
+    existing = await db["sessions"].find_one({
+        "userId": session.userId,
+        "name": session.name
+    })
+
+    print(session.userId)
+    print(session.name)
+
+    # Сконвертувати messages (Pydantic) у plain dicts
+    new_messages_dicts = [m.dict() for m in session.messages]
+    # Якщо не існує — створити нову сесію
+    session_data = session.dict()
+    session_data["messages"] = new_messages_dicts  # Перезаписати серіалізованими dict
+
+    return await session_model.create_session(db, session_data)
+
 
 @router.put("/{id}", response_model=session_schema.SessionOut)
 async def update_session(id: str, session: session_schema.SessionUpdate, db=Depends(get_database)):
@@ -69,3 +87,20 @@ async def update_session(id: str, session: session_schema.SessionUpdate, db=Depe
 async def delete_session(id: str, db=Depends(get_database)):
     await session_model.delete_session(db, id)
     return {"message": "Session deleted successfully"}
+
+
+@router.patch("/{id}/rename")
+async def rename_session(id: str, body: dict, db=Depends(get_database)):
+    new_name = body.get("name")
+    if not new_name:
+        raise HTTPException(status_code=400, detail="Нова назва не вказана")
+
+    result = await db["sessions"].update_one(
+        {"_id": ObjectId(id)},
+        {"$set": {"name": new_name, "updatedAt": datetime.utcnow()}}
+    )
+
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Сесію не знайдено або назва не змінена")
+
+    return {"status": "ok", "newName": new_name}

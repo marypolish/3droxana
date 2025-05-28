@@ -55,6 +55,7 @@ class ChatResponse(BaseModel):
     response: str
     link: str
     emotion: str
+    title: str
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
@@ -132,6 +133,8 @@ async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
     emotion_match = re.search(r'(?i)емоція\s*:\s*([^\n]+)', answer)
     emotion = emotion_match.group(1).strip() if emotion_match else "😊"
 
+    title_match = re.search(r'(?i)текст\s*чату\s*:\s*(.+?)(?:\n\s*(основний\s*текст|емоція|посилання)\s*:)', answer, re.DOTALL)
+    chat_title = title_match.group(1).strip() if title_match else "Без назви"
 
     combined_text = f"{main_text}\n\n 🔗 Посилання: {link}"
     print(answer)
@@ -160,5 +163,5 @@ async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
         raise HTTPException(status_code=404, detail="Сесія не знайдена")
 
     # 5. Відповідаємо фронтенду
-    return ChatResponse(response=combined_text, link=link, emotion=emotion)
+    return ChatResponse(response=combined_text, link=link, emotion=emotion, title=chat_title)
     

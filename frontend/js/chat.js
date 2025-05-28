@@ -133,6 +133,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     // Відправка запиту до бекенду
     try {
+      const sessionId = localStorage.getItem("sessionId");
       const response = await fetch("http://localhost:8000/api/faq/chat", {
         method: "POST",
         headers: {
@@ -140,7 +141,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         },
         body: JSON.stringify({
           message: message,
-          sessionId: sessionObj,
+          sessionId: sessionId,
           userId: userId
         }),
         
@@ -166,6 +167,24 @@ window.addEventListener("DOMContentLoaded", async () => {
       chatWindow.appendChild(assistantMsg);
 
       chatWindow.scrollTop = chatWindow.scrollHeight;
+      // 🆕 Перевірка та оновлення назви сесії
+      const sessionRes = await fetch(`http://localhost:8000/api/sessions/${sessionId}`);
+      if (!sessionRes.ok) {
+        throw new Error("Не вдалося отримати сесію для перевірки назви.");
+      }
+      const sessionData = await sessionRes.json();
+
+      const currentName = sessionData.name?.trim();
+      if (currentName === "new Чат з FAQ" || currentName === "Чат з FAQ") {
+        await fetch(`http://localhost:8000/api/sessions/${sessionId}/rename`, {
+          method: "PATCH", // або "PUT", залежно від вашого бекенду
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: data.title }),
+        });
+        console.log("✅ Назву сесії оновлено на:", data.title);
+      }
     } catch (err) {
       console.error("Помилка відповіді від сервера:", err);
       const errorMsg = document.createElement("div");
@@ -173,5 +192,56 @@ window.addEventListener("DOMContentLoaded", async () => {
       errorMsg.textContent = "Вибач, виникла помилка при зверненні до сервера.";
       chatWindow.appendChild(errorMsg);
     }
+  }
+});
+
+
+document.getElementById("new-chat-btn").addEventListener("click", async () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?._id?.$oid || user?._id || null;
+  localStorage.removeItem("sessionId");
+  try {
+    
+    const newSessionResponse = await fetch("http://localhost:8000/api/sessions/newSession", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: userId,
+        name: " new Чат з FAQ",
+        messages: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }),
+    });
+
+    if (!newSessionResponse.ok) {
+      throw new Error(`Не вдалося створити нову сесію: ${newSessionResponse.status}`);
+    }
+
+    const newSessionId = (await newSessionResponse.text()).replace(/^"|"$/g, '');
+    localStorage.setItem("sessionId", newSessionId);
+    let sessionId = newSessionId;
+
+    console.log("🔄 Нова сесія створена:", sessionId);
+    window.location.reload();
+
+    // Отримати (ще порожні) повідомлення нової сесії
+    const messagesRes = await fetch(`http://localhost:8000/api/sessions/${sessionId}`);
+    const sessionData = await messagesRes.json();
+
+    const chatWindow = document.querySelector(".chat-window");
+
+    // Можна додати роздільник або повідомлення, що розпочато новий чат
+    const divider = document.createElement("div");
+    divider.className = "chat-message system";
+    divider.textContent = "🆕 Розпочато нову сесію чату";
+    chatWindow.appendChild(divider);
+
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+  } catch (error) {
+    console.error("❌ Помилка при створенні нового чату:", error);
   }
 });
