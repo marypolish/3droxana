@@ -141,8 +141,8 @@ window.addEventListener("DOMContentLoaded", async () => {
       // Додаємо відповідь асистента
       const assistantMsg = document.createElement("div");
       assistantMsg.className = "chat-message assistant";
-      assistantMsg.textContent =
-        data.response || "Асистент не надав відповіді.";
+      assistantMsg.textContent = data.response || "Асистент не надав відповіді.";
+      console.log(data.response)
       chatWindow.appendChild(assistantMsg);
 
       chatWindow.scrollTop = chatWindow.scrollHeight;

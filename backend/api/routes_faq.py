@@ -58,19 +58,25 @@ async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
     message = request.message.strip()
     session_id = request.sessionId
     # Пошук FAQ релевантних
-    faqs = await faq_model.get_all_faqs(db)
-    relevant = []
-    for faq in faqs:
-        if message in faq["question"].lower() or message in faq["answer"].lower():
-            relevant.append(faq)
-            if len(relevant) >= 3:  # максимум 3 для контексту
-                break
+    # faqs = await faq_model.get_all_faqs(db)
+    # relevant = []
+    # for faq in faqs:
+    #     if message in faq["question"].lower() or message in faq["answer"].lower():
+    #         relevant.append(faq)
+    #         if len(relevant) >= 3:  # максимум 3 для контексту
+    #             break
 
-    # Формуємо контекст
+    # # Формуємо контекст
+    # context = "\n\n".join([
+    #     f"Питання: {item['question']}\nВідповідь: {item['answer']}\nДжерело: {item.get('source', 'немає')}"
+    #     for item in relevant
+    # ])
+    links = await db["links"].find().to_list(None)
     context = "\n\n".join([
-        f"Питання: {item['question']}\nВідповідь: {item['answer']}\nДжерело: {item.get('source', 'немає')}"
-        for item in relevant
+        f"{i+1}) Назва: {link['title']}\nОпис: {link['description']}\nТеги: {', '.join(link['tags'])}\nПосилання: {link['url']}"
+        for i, link in enumerate(links) if link["visible"]
     ])
+
 
     # Виклик OpenAI асинхронно
     try:
@@ -88,16 +94,16 @@ async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
                     "❗ Для таких відповідей використовуй лише ту інформацію, яка є в контексті (отримана з бази даних). "
                     "Посилання ти можеш використовувати тільки з контексту. "
                     "Не вигадуй нові посилання."
-
+                    
                     "Якщо користувач просто хоче поспілкуватися, підтримай розмову дружньо і весело, обов’язково вказуй, що це — твоя особиста думка. "
                     "У таких випадках можеш бути емоційним, живим, додавати емодзі, емоційні вигуки. "
                     
-                    "⚠️ Форматуй свою відповідь ТІЛЬКИ в такому вигляді:\n"
-                    "текст чату: {ккороткий заголовок або емоційний вступ, який відображатиметься як заголовок чату або прев’ю повідомлення. Зроби його помітним, емоційним, таким, щоб привертав увагу користувача.}\n"
-                    "основний текст: {розгорнута відповідь з емоціями}\n"
-                    "емоція: {обери до 5 відповідних емодзі з цього набору: 😊, 😄, 😲, 🤔, 😍}\n"
+                    "⚠️ ВАЖЛИВО: Ти ЗАВЖДИ надаєш відповідь ТІЛЬКИ в одному строго визначеному форматі. Не додаєш жодного слова, жодного речення, жодного пояснення за межами шаблону. Не ігноруєш структуру. Формат відповіді:\n"
+                    "текст чату: {У полі \"текст чату\" завжди генеруй короткий, емоційний заголовок, ніби це назва розділу чату. НЕ пиши питання і не формулюй як відповідь. Заголовок має бути коротким, яскравим і привертати увагу, наприклад: \"Оцінювання в КПІ\", \"Стипендії та бал\", \"Реєстрація на курси\", \"Важливо для першокурсників\", \"Вау! Нові можливості ✨\" тощо.}\n"
+                    "основний текст: {розгорнута відповідь з емоціями, проте без посилань. Посилання вказуй ТІЛЬКИ в полі «посилання».}\n"
+                    "емоція: {обери один з 5 відповідних емодзі з цього набору: 😊, 😄, 😲, 🤔, 😍}\n"
                     "посилання: {додай відповідне посилання, якщо є, інакше напиши: немає}\n"
-                    "Не додавай нічого поза цим шаблоном. Не пояснюй свій вибір."
+                    "Не додавай нічого за межами цього шаблону. НЕ починай речення без поля. НЕ додавай пояснень. НЕ змінюй структуру."
                                     
                     )
                 },
@@ -119,6 +125,9 @@ async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
     main_text = main_text_match.group(1).strip() if main_text_match else "Вибач, не вдалося отримати основний текст 😢"
     link = link_match.group(1).strip() if link_match else "немає"
 
+    combined_text = f"{main_text}\n\n 🔗 Посилання: {link}"
+    print(answer)
+    print(combined_text)
     # 3. Формуємо повідомлення для сесії
     user_msg = {
         "role": "user",
@@ -127,7 +136,7 @@ async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
     }
     assistant_msg = {
         "role": "assistant",
-        "text": main_text,
+        "text": combined_text,
         "timestamp": datetime.utcnow()
     }
 
@@ -143,5 +152,5 @@ async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
         raise HTTPException(status_code=404, detail="Сесія не знайдена")
 
     # 5. Відповідаємо фронтенду
-    return ChatResponse(response=main_text, link=link)
+    return ChatResponse(response=combined_text, link=link)
     
