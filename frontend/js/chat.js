@@ -4,6 +4,25 @@ window.addEventListener("DOMContentLoaded", async () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?._id?.$oid || user?._id || null;
 
+  function updateVideoByEmotion(emotion) {
+    const videoMap = {
+      "😊": "happy.mp4",
+      "😄": "speak_blink.mp4",
+      "😲": "surprize1.mp4",
+      "🤔": "squinted1.mp4",
+      "😍": "surprize1.mp4"
+    };
+  
+    const filename = videoMap[emotion] || "happy.mp4"; // fallback
+    const videoElement = document.getElementById("emotion-video");
+    const sourceElement = videoElement.querySelector("source");
+  
+    // Зміна джерела відео
+    sourceElement.src = `/avatar/animations/${filename}`;
+    videoElement.load(); // Завантажити нове відео
+    videoElement.play(); // Запустити
+  }
+
   if (!user) {
     alert("Користувач не авторизований");
     window.location.href = "/auth";
@@ -57,7 +76,8 @@ window.addEventListener("DOMContentLoaded", async () => {
       console.log("Існуюча сесія:", sessionObj);
     }
   
-    const sessionIdToFetch = sessionObj || sessionObj.id || sessionObj._id;
+    const sessionIdToFetch = sessionId || localStorage.getItem("sessionId");
+
 
     const messagesRes = await fetch(
       `http://localhost:8000/api/sessions/${sessionIdToFetch}`
@@ -119,18 +139,18 @@ window.addEventListener("DOMContentLoaded", async () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: userId,
-          sessionId: sessionObj|| sessionObj.id || sessionObj._id ,
           message: message,
+          sessionId: sessionObj,
+          userId: userId
         }),
+        
       });
-
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
-
+      updateVideoByEmotion(data.emotion);
       console.log("data.response:", data.response);
       const assistantEl = document.getElementById("assistant-text");
       console.log("assistant-text:", assistantEl);

@@ -10,14 +10,16 @@ from httpx import Client
 import re
 from bson import ObjectId
 from datetime import datetime
-
+from together import Together
 router = APIRouter(prefix="/api/faq", tags=["FAQ"])
 
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",  # ✅ OpenRouter endpoint
-    api_key="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",  
-    http_client=Client(trust_env=False)# 🔑 Встав сюди свій особистий API-ключ з https://openrouter.ai
-)
+
+client = Together(api_key="137f302b0bb50bb26cbf1f491b2bf183bf54c1bebd7df461ac9d0441f8f7f9d7")
+# client = OpenAI(
+#     base_url="https://openrouter.ai/api/v1",  # ✅ OpenRouter endpoint
+#     api_key="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",  
+#     http_client=Client(trust_env=False)# 🔑 Встав сюди свій особистий API-ключ з https://openrouter.ai
+# )
 
 @router.get("/", response_model=list[faq_schema.FAQOut])
 async def read_all_faqs(db=Depends(get_database)):
@@ -52,11 +54,13 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     response: str
     link: str
+    emotion: str
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
     message = request.message.strip()
     session_id = request.sessionId
+    print("📥 Отримано запит:", request.dict())
     # Пошук FAQ релевантних
     # faqs = await faq_model.get_all_faqs(db)
     # relevant = []
@@ -82,7 +86,7 @@ async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
     try:
         response = await asyncio.to_thread(
             lambda: client.chat.completions.create(
-                model="google/gemma-3-4b-it:free",
+                model="deepseek-ai/DeepSeek-V3",
                 messages=[
                 {
                     "role": "system",
@@ -125,6 +129,10 @@ async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
     main_text = main_text_match.group(1).strip() if main_text_match else "Вибач, не вдалося отримати основний текст 😢"
     link = link_match.group(1).strip() if link_match else "немає"
 
+    emotion_match = re.search(r'(?i)емоція\s*:\s*([^\n]+)', answer)
+    emotion = emotion_match.group(1).strip() if emotion_match else "😊"
+
+
     combined_text = f"{main_text}\n\n 🔗 Посилання: {link}"
     print(answer)
     print(combined_text)
@@ -152,5 +160,5 @@ async def chat_with_faq(request: ChatRequest, db=Depends(get_database)):
         raise HTTPException(status_code=404, detail="Сесія не знайдена")
 
     # 5. Відповідаємо фронтенду
-    return ChatResponse(response=combined_text, link=link)
+    return ChatResponse(response=combined_text, link=link, emotion=emotion)
     
