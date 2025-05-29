@@ -104,3 +104,8 @@ async def rename_session(id: str, body: dict, db=Depends(get_database)):
         raise HTTPException(status_code=404, detail="Сесію не знайдено або назва не змінена")
 
     return {"status": "ok", "newName": new_name}
+
+@router.get("/user/{user_id}", response_model=list[session_schema.SessionOut])
+async def get_sessions_by_user(user_id: str, db=Depends(get_database)):
+    sessions = await session_model.get_sessions_by_user(db, user_id)
+    return sessions

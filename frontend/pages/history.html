@@ -35,24 +35,65 @@
   </main>
 
   <script>
-    const chats = []; // Замінити на реальні дані з API або localStorage
-    const chatList = document.getElementById('chatList');
-    const emptyMessage = document.getElementById('emptyMessage');
+async function loadChats() {
+      try {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?._id?.$oid || user?._id || null;
 
-    if (chats.length === 0) {
-      emptyMessage.style.display = 'block';
-    } else {
-      emptyMessage.style.display = 'none';
-      chats.forEach(chat => {
-        const li = document.createElement('li');
-        li.className = 'chat-item';
-        li.innerHTML = `
-          <div>${chat.title}</div>
-          <div class="chat-time">${chat.time}</div>
-        `;
-        chatList.appendChild(li);
-      });
+        if (!userId) {
+          document.getElementById('emptyMessage').textContent = "Будь ласка, увійдіть у систему.";
+          document.getElementById('emptyMessage').style.display = 'block';
+          return;
+        }
+
+        const response = await fetch(`/api/sessions/user/${userId}`);
+        if (!response.ok) throw new Error(`HTTP помилка: ${response.status}`);
+
+        const chats = await response.json();
+
+        const chatList = document.getElementById('chatList');
+        const emptyMessage = document.getElementById('emptyMessage');
+        chatList.innerHTML = ''; // Очистити список
+
+        if (!chats || chats.length === 0) {
+          emptyMessage.style.display = 'block';
+        } else {
+          emptyMessage.style.display = 'none';
+
+          chats.forEach(chat => {
+            const sessionId = chat._id?.$oid || chat._id;
+            const li = document.createElement('li');
+            li.className = 'chat-item';
+
+            // Створюємо посилання, яке при кліку збереже sessionId і перейде
+            const a = document.createElement('a');
+            a.href = '#';
+            a.innerHTML = `
+              <div>${chat.name || 'Без назви'}</div>
+              <div class="chat-time">${new Date(chat.updatedAt).toLocaleString()}</div>
+            `;
+
+            a.addEventListener('click', (e) => {
+              e.preventDefault();
+              localStorage.setItem("sessionId", sessionId);
+              window.location.href = "/chat";
+            });
+
+            li.appendChild(a);
+            chatList.appendChild(li);
+          });
+        }
+      } catch (error) {
+        console.error("Помилка завантаження чатів:", error);
+        const emptyMessage = document.getElementById('emptyMessage');
+        emptyMessage.textContent = "Помилка завантаження історії чатів.";
+        emptyMessage.style.display = 'block';
+      }
     }
-  </script>
+
+    loadChats();
+</script>
+
+
 </body>
 </html>
