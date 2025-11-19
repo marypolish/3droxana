@@ -42,6 +42,10 @@ async def serve_faq():
 async def serve_faq():
     return FileResponse(os.path.join("frontend", "pages", "history.html"))
 
+@app.get("/sites", response_class=FileResponse)
+async def serve_faq():
+    return FileResponse(os.path.join("frontend", "pages", "sites.html"))
+
 app.include_router(routes_faq.router)
 app.include_router(routes_feedback.router)
 app.include_router(routes_links.router)
