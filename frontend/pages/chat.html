@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Чат з помічником</title>
+  <link rel="stylesheet" href="/static/css/chat.css" />
+</head>
+<body>
+  <!-- Верхнє меню -->
+  <header class="top-nav">
+    <nav class="menu-bar">
+      <ul>
+        <li><a href="/">Головна</a></li>
+        <li><a href="/history">Історія чатів</a></li>
+        <li><a href="/sites">Сайти КПІ</a></li>
+        <button id="new-chat-btn" class="create-chat-btn">➕ Створити новий чат</button>
+      </ul>
+    </nav>
+    <a href="/" class="logout-btn">Вийти</a>
+  </header>
+  
+
+  <!-- Основна частина -->
+  <main class="chat-container">
+    <!-- Ліва панель -->
+    <aside class="left-panel">
+      
+      <video autoplay loop muted playsinline class="avatar-video" id="emotion-video" style="width: 300px; height: auto; object-fit: contain; border-radius: 15px;">
+        <source src="/avatar/animations/squinted1.mp4" type="video/mp4" />
+      </video>
+      <div class="assistant-message">
+        <p id="assistant-text">Привіт! Чим можу допомогти?</p>
+      </div>
+    </aside>
+
+    <!-- Права панель -->
+    <section class="right-panel">
+      <div class="chat-window">
+        <!-- Повідомлення чату -->
+        <div class="chat-message assistant">Привіт! Чим можу допомогти?</div>
+        <!-- Тут буде більше повідомлень динамічно -->
+      </div>
+
+      <!-- Введення повідомлення -->
+      <div class="chat-input">
+        <textarea id="user-input" placeholder="Введіть повідомлення..."></textarea>
+        <button id="voice-btn">🎤</button>
+        <button id="send-btn">📩</button>
+      </div>
+    </section>
+  </main>
+  <script src="/static/js/chat.js"></script>
+</body>
+
+<script>
+  // Очистити localStorage при натисканні на кнопку "Вийти"
+document.querySelector(".logout-btn")?.addEventListener("click", function (e) {
+  // Очистити локальне сховище
+  localStorage.clear();
+  sessionStorage.clear(); // Якщо використовувалось
+  // За потреби: показати повідомлення або логування
+  console.log("Дані з локального сховища видалено");
+
+  
+});
+</script> 
+   
+
+</html>

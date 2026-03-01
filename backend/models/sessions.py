@@ -24,3 +24,8 @@ async def update_session(db: AsyncIOMotorDatabase, id: str, data: dict):
 
 async def delete_session(db: AsyncIOMotorDatabase, id: str):
     await db[collection_name].delete_one({"_id": ObjectId(id)})
+
+async def get_sessions_by_user(db: AsyncIOMotorDatabase, user_id: str):
+    sessions = await db[collection_name].find({"userId": user_id}).sort("updatedAt", -1).to_list(100)
+    return [serialize_session(s) for s in sessions]
+

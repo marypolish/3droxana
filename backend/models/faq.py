@@ -4,8 +4,10 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 collection_name = "faq"
 
 def serialize_faq(faq) -> dict:
-    faq["_id"] = str(faq["_id"])
-    return faq
+    serialized = faq.copy()
+    serialized["_id"] = str(faq["_id"])
+    return serialized
+
 
 async def get_all_faqs(db: AsyncIOMotorDatabase):
     faqs = await db[collection_name].find().to_list(1000)
