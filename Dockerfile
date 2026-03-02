@@ -3,19 +3,20 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Залежності
+# Dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Код проєкту (backend, frontend, avatar)
+# Project code (backend, assistant logic, frontend, avatar)
 COPY backend ./backend
+COPY assistant_core ./assistant_core
 COPY frontend ./frontend
 COPY avatar ./avatar
 
-# Порт
+# Port
 EXPOSE 8000
 
-# MONGODB_URI та DATABASE_NAME можна передати через -e при docker run
+# MONGODB_URI and DATABASE_NAME can be passed via -e in docker run
 ENV PYTHONUNBUFFERED=1
 
 CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
