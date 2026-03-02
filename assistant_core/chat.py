@@ -1,10 +1,12 @@
 import asyncio
+import os
 import re
 import traceback
 from datetime import datetime
 from typing import Any, Dict
 
 from bson import ObjectId
+from dotenv import load_dotenv
 from together import Together
 
 
@@ -16,9 +18,15 @@ class ChatServiceError(Exception):
     """Загальна помилка сервісу чату."""
 
 
-client = Together(
-    api_key="137f302b0bb50bb26cbf1f491b2bf183bf54c1bebd7df461ac9d0441f8f7f9d7"
-)
+load_dotenv()
+
+TOGETHER_API_KEY = os.environ.get("TOGETHER_API_KEY")
+if not TOGETHER_API_KEY:
+    raise RuntimeError(
+        "TOGETHER_API_KEY is not set. Configure it via environment variables or .env file."
+    )
+
+client = Together(api_key=TOGETHER_API_KEY)
 
 
 async def build_links_context(db) -> str:
