@@ -1,89 +1,109 @@
-# 3droxana
+## 3droxana — AI‑чат для студентів
 
-Застосунок з FastAPI-бекендом та статичним фронтендом. Нижче — як розгорнути його через Docker.
+3droxana — це веб‑застосунок з FastAPI‑бекендом і статичним фронтендом, який надає **розумного чат‑асистента для студентів**:
+
+- **Пояснює правила та процеси навчання** (предмети, реєстрація, оцінювання, стипендії тощо).
+- **Підказує корисні ресурси** з бази посилань коледжу / університету.
+- **Веде історію сесій спілкування**, щоб можна було повертатись до попередніх діалогів.
+
+Бекенд працює поверх FastAPI, зберігає дані у MongoDB і викликає зовнішню LLM‑модель (через Together API).
 
 ---
 
-## Що потрібно
+## Вимоги
 
-- [Docker](https://docs.docker.com/get-docker/) (встановлений і запущений на машині)
+- Python 3.12+
+- Git Bash **або** інший bash‑сумісний термінал на Windows
 - Доступ до MongoDB (локальний або MongoDB Atlas)
 
 ---
 
-## Розгортання через Dockerfile
+## Локальний запуск (Git Bash, venv)
 
-### 1. Клонування та перехід у папку проєкту
+### 1. Клонувати репозиторій та перейти в папку проєкту
 
 ```bash
-git clone <URL-репозиторію> 3droxana
+git clone <URL-репозиторію>
 cd 3droxana
 ```
 
-(Якщо проєкт уже є локально — просто перейди в його кореневу папку.)
+### 2. Створити віртуальне середовище (один раз)
 
-### 2. Збірка образу
+```bash
+py -3 -m venv venv   # або: python -m venv venv
+```
 
-У корені проєкту (де лежать `Dockerfile` і `requirements.txt`):
+### 3. Активувати venv у Git Bash
+
+```bash
+source venv/Scripts/activate
+```
+
+У рядку термінала має з’явитися префікс `(venv)`.
+
+### 4. Встановити залежності
+
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 5. Налаштувати секрети через `.env`
+
+У корені проєкту створіть файл `.env` (він уже доданий у `.gitignore`, тому не потрапить у git) з таким вмістом **(значення замініть на свої)**:
+
+```env
+MONGODB_URI="mongodb+srv://polishchukmariyatv21:LspA8MqTknfK535S@3davatar.jd7ic5f.mongodb.net/"
+DATABASE_NAME="3davatar"
+TOGETHER_API_KEY="137f302b0bb50bb26cbf1f491b2bf183bf54c1bebd7df461ac9d0441f8f7f9d7"
+```
+
+- `MONGODB_URI` — повний URI до вашого MongoDB/Atlas‑кластера.
+- `DATABASE_NAME` — назва бази, за замовчуванням використовується `3davatar`.
+- `TOGETHER_API_KEY` — API‑ключ від Together (для LLM‑моделі).
+
+### 6. Запустити сервер
+
+```bash
+python -m uvicorn backend.main:app --reload --port 8000
+```
+
+Після запуску API та фронтенд будуть доступні за адресою:
+
+- `http://localhost:8000` — основна сторінка застосунку.
+
+---
+
+## Запуск через Docker
+
+### 1. Збірка образу
 
 ```bash
 docker build -t 3droxana .
 ```
 
-- `-t 3droxana` — ім’я образу (можна змінити).
-- Крапка в кінці — контекст збірки (поточна папка).
+### 2. Запуск контейнера з секретами
 
-### 3. Запуск контейнера
-
-**Базовий запуск** (MongoDB беруться з `backend/config.py`):
-
-```bash
-docker run -p 8000:8000 3droxana
-```
-
-- `-p 8000:8000` — порт контейнера 8000 проброшується на хост.
-- Застосунок буде доступний: **http://localhost:8000**
-
-**З указанням MongoDB через змінні оточення** (рекомендовано для продакшену):
+Рекомендовано передавати ті ж самі змінні оточення, що й у `.env`:
 
 ```bash
 docker run -p 8000:8000 \
-  -e MONGODB_URI="mongodb+srv://user:pass@cluster.mongodb.net/" \
+  -e MONGODB_URI="mongodb+srv://polishchukmariyatv21:LspA8MqTknfK535S@3davatar.jd7ic5f.mongodb.net/" \
   -e DATABASE_NAME="3davatar" \
+  -e TOGETHER_API_KEY="137f302b0bb50bb26cbf1f491b2bf183bf54c1bebd7df461ac9d0441f8f7f9d7" \
   3droxana
 ```
 
-На Windows (PowerShell) можна в один рядок:
-
-```powershell
-docker run -p 8000:8000 -e MONGODB_URI="mongodb+srv://..." -e DATABASE_NAME="3davatar" 3droxana
-```
-
-### 4. Зупинка та видалення
-
-- Зупинити контейнер: `Ctrl+C` у терміналі, де він запущений, або в іншому терміналі:
-  ```bash
-  docker stop $(docker ps -q --filter ancestor=3droxana)
-  ```
-- Видалити контейнер після зупинки (за потреби): через `docker rm <container_id>` або Docker Desktop.
+Після цього застосунок буде доступний на `http://localhost:8000`.
 
 ---
 
-## Корисні команди
+## Коротко про структуру
 
-| Дія | Команда |
-|-----|--------|
-| Зібрати образ без кешу | `docker build --no-cache -t 3droxana .` |
-| Запустити у фоні (detached) | `docker run -d -p 8000:8000 --name 3droxana-app 3droxana` |
-| Переглянути логи | `docker logs 3droxana-app` (або ID контейнера) |
-| Зупинити контейнер за іменем | `docker stop 3droxana-app` |
-
----
-
-## Структура проєкту (що потрібно для Docker)
-
-- `Dockerfile` — опис образу (Python 3.12, залежності, копіювання `backend/`, `frontend/`, `avatar/`).
-- `requirements.txt` — Python-залежності бекенду.
-- `.dockerignore` — виключає `venv`, `.git`, кеш тощо при збірці.
-
-Якщо потрібно змінити порт або додати змінні оточення — змінюй аргументи в `docker run` або (краще) використовуй `docker-compose.yml` для зручної конфігурації.
+- `backend/` — FastAPI‑бекенд (роути, моделі, робота з MongoDB).
+- `assistant_core/` — бізнес‑логіка чат‑асистента (виклики LLM, парсинг відповіді, оновлення сесій).
+- `frontend/` — статичні HTML/CSS/JS‑сторінки для інтерфейсу.
+- `avatar/` — медіафайли для 3D‑/анімаційного аватара.
+- `requirements.txt` — список Python‑залежностей.
+- `Dockerfile` — опис Docker‑образу для продакшен/контейнерного запуску.
+- `.env` — **локальні секрети** (не комітяться в git).
