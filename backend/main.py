@@ -1,15 +1,19 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
 import os
+
 from backend.api import routes_faq
 from backend.api import routes_feedback
 from backend.api import routes_links
 from backend.api import routes_sessions
 from backend.api import routes_users
 from backend.db.mongodb import connect_to_mongo, close_mongo_connection
-from fastapi.middleware.cors import CORSMiddleware
 
+
+load_dotenv()
 
 app = FastAPI()
 
