@@ -1,149 +1,167 @@
 <!DOCTYPE html>
-<html lang="uk">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Аутентифікація</title>
-    <link rel="stylesheet" href="/static/css/style.css" />
-  </head>
-  <body class="auth-page">
-    <div class="auth-wrapper">
-      <img src="/static/images/avatar1.png" alt="Аватар" class="avatar-img" />
+<html lang="uk" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вхід в систему</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .auth-container {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-color);
+        }
+        .auth-card {
+            background-color: var(--sidebar-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .form-control {
+            background-color: #2b2b2b;
+            border: 1px solid #444;
+            color: white;
+            padding: 12px;
+        }
+        .form-control:focus {
+            background-color: #303030;
+            border-color: var(--accent-color);
+            color: white;
+            box-shadow: none;
+        }
+        .btn-auth {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+        }
+        .btn-auth:hover { background-color: var(--accent-hover); color: white; }
+    </style>
+</head>
+<body>
 
-      <h2 id="form-title">Вхід</h2>
+<div class="auth-container">
+    <div class="auth-card text-center">
+        <img src="/static/images/avatar1.png" alt="Avatar" class="rounded-circle mb-4" width="100" height="100" style="object-fit: cover;">
+        
+        <h3 id="form-title" class="mb-4 text-white">Вхід</h3>
 
-      <!-- Вхід -->
-      <form class="auth-form" id="signin-form">
-        <input
-          type="email"
-          id="signin-email"
-          placeholder="Електронна пошта"
-          required
-        />
-        <input
-          type="password"
-          id="signin-password"
-          placeholder="Пароль"
-          required
-        />
-        <!-- <label class="remember">
-          <input type="checkbox" />
-          Запам'ятати мене
-        </label> -->
-        <button type="submit">Увійти</button>
-      </form>
+        <!-- Форма Входу -->
+        <form id="signin-form">
+            <div class="mb-3">
+                <input type="email" class="form-control" id="signin-email" placeholder="Email" required>
+            </div>
+            <div class="mb-4">
+                <input type="password" class="form-control" id="signin-password" placeholder="Пароль" required>
+            </div>
+            <button type="submit" class="btn btn-auth w-100 rounded-3">Увійти</button>
+        </form>
 
-      <!-- Реєстрація -->
-      <form class="auth-form hidden" id="signup-form">
-        <input
-          type="text"
-          id="signup-username"
-          placeholder="Ім'я користувача"
-          required
-        />
-        <input
-          type="email"
-          id="signup-email"
-          placeholder="Електронна пошта"
-          required
-        />
-        <input
-          type="password"
-          id="signup-password"
-          placeholder="Пароль"
-          required
-        />
-        <input
-          type="password"
-          id="signup-confirm"
-          placeholder="Підтвердіть пароль"
-          required
-        />
-        <button type="submit">Зареєструватися</button>
-      </form>
+        <!-- Форма Реєстрації (прихована) -->
+        <form id="signup-form" class="d-none">
+            <div class="mb-3">
+                <input type="text" class="form-control" id="signup-username" placeholder="Ім'я" required>
+            </div>
+            <div class="mb-3">
+                <input type="email" class="form-control" id="signup-email" placeholder="Email" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" id="signup-password" placeholder="Пароль" required>
+            </div>
+            <div class="mb-4">
+                <input type="password" class="form-control" id="signup-confirm" placeholder="Повторіть пароль" required>
+            </div>
+            <button type="submit" class="btn btn-auth w-100 rounded-3">Створити акаунт</button>
+        </form>
 
-      <p class="switch-text" id="toggle-text">
-        Ще не маєте облікового запису?
-        <a href="#" id="toggle-link">Зареєструватися</a>
-      </p>
+        <p class="mt-4 text-secondary small" id="toggle-text">
+            Ще не маєте акаунту? <a href="#" id="toggle-link" class="text-white text-decoration-none fw-bold">Зареєструватися</a>
+        </p>
     </div>
+</div>
 
-    <script>
-      const toggleLink = document.getElementById("toggle-link");
-      const toggleText = document.getElementById("toggle-text");
-      const title = document.getElementById("form-title");
-      const signInForm = document.getElementById("signin-form");
-      const signUpForm = document.getElementById("signup-form");
+<script>
+    // JS логіка перемикання форм та запитів (з твого старого коду)
+    const toggleLink = document.getElementById("toggle-link");
+    const toggleText = document.getElementById("toggle-text");
+    const title = document.getElementById("form-title");
+    const signInForm = document.getElementById("signin-form");
+    const signUpForm = document.getElementById("signup-form");
 
-      signInForm.addEventListener("submit", async (e) => {
+    // Перемикач
+    toggleLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        const isLogin = !signInForm.classList.contains("d-none");
+        
+        if (isLogin) {
+            signInForm.classList.add("d-none");
+            signUpForm.classList.remove("d-none");
+            title.textContent = "Реєстрація";
+            toggleText.innerHTML = 'Вже є акаунт? <a href="#" id="toggle-link-back" class="text-white text-decoration-none fw-bold">Увійти</a>';
+            document.getElementById("toggle-link-back").addEventListener("click", toggleLink.click.bind(toggleLink)); // хак для прив'язки події
+        } else {
+            signInForm.classList.remove("d-none");
+            signUpForm.classList.add("d-none");
+            title.textContent = "Вхід";
+            toggleText.innerHTML = 'Ще не маєте акаунту? <a href="#" id="toggle-link" class="text-white text-decoration-none fw-bold">Зареєструватися</a>';
+        }
+    });
+
+    // Логіка Входу
+    signInForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const email = document.getElementById("signin-email").value;
         const password = document.getElementById("signin-password").value;
 
-        const response = await fetch("http://localhost:8000/api/users/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
+        try {
+            const response = await fetch("http://localhost:8000/api/users/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+            const result = await response.json();
+            
+            if (response.ok) {
+                localStorage.setItem('user', JSON.stringify(result.user));
+                window.location.href = "/chat";
+            } else {
+                alert("Помилка: " + result.detail);
+            }
+        } catch(err) { alert("Помилка з'єднання"); }
+    });
 
-        const result = await response.json();
-        if (response.ok) {
-          alert("Вхід успішний!");
-          const user = result.user;
-          localStorage.setItem('user', JSON.stringify(user)); 
-
-          // Перенаправити на сторінку чату
-          window.location.href = "/chat";
-        } else {
-          alert("Помилка входу: " + result.detail);
-        }
-      });
-
-      signUpForm.addEventListener("submit", async (e) => {
+    // Логіка Реєстрації
+    signUpForm.addEventListener("submit", async (e) => {
         e.preventDefault();
+        // ... (Тут твоя стара логіка реєстрації, ID полів збережені) ...
         const username = document.getElementById("signup-username").value;
         const email = document.getElementById("signup-email").value;
         const password = document.getElementById("signup-password").value;
         const confirm = document.getElementById("signup-confirm").value;
 
-        if (password !== confirm) {
-          alert("Паролі не співпадають!");
-          return;
-        }
+        if(password !== confirm) { alert("Паролі не співпадають"); return; }
 
-        const response = await fetch(
-          "http://localhost:8000/api/users/register",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, email, password }),
-          }
-        );
+        try {
+            const response = await fetch("http://localhost:8000/api/users/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, email, password }),
+            });
+            if(response.ok) {
+                alert("Успішно! Тепер увійдіть.");
+                window.location.reload();
+            } else {
+                alert("Помилка реєстрації");
+            }
+        } catch(err) { alert("Помилка з'єднання"); }
+    });
+</script>
 
-        const result = await response.json();
-        if (response.ok) {
-          alert("Реєстрація успішна! Можете увійти.");
-          signUpForm.classList.add("hidden");
-          signInForm.classList.remove("hidden");
-          document.getElementById("form-title").textContent = "Вхід";
-        } else {
-          alert("Помилка реєстрації: " + result.detail);
-        }
-      });
-
-      toggleLink.addEventListener("click", function switchForm(e) {
-        e.preventDefault();
-        const isLogin = !signInForm.classList.contains("hidden");
-        signInForm.classList.toggle("hidden");
-        signUpForm.classList.toggle("hidden");
-        title.textContent = isLogin ? "Реєстрація" : "Вхід";
-        toggleText.innerHTML = isLogin
-          ? 'Вже маєте обліковий запис? <a href="#" id="toggle-link">Увійти</a>'
-          : 'Ще не маєте облікового запису? <a href="#" id="toggle-link">Зареєструватися</a>';
-        document
-          .getElementById("toggle-link")
-          .addEventListener("click", switchForm);
-      });
-    </script>
-  </body>
+</body>
 </html>
