@@ -3,9 +3,11 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 
 collection_name = "users"
 
-
 def serialize_user(user) -> dict:
-    user["_id"] = str(user["_id"])
+    # Нормалізуємо id у два ключі: "_id" (як у Mongo) та "id" (зручно для JWT / фронта)
+    string_id = str(user["_id"])
+    user["_id"] = string_id
+    user["id"] = string_id
     # Не віддавати пароль у відповідях
     user.pop("password", None)
     return user

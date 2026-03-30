@@ -1,6 +1,11 @@
+from datetime import datetime, timedelta
+
 from fastapi import APIRouter, Depends, HTTPException
+from jose import jwt
 from passlib.context import CryptContext
 
+from ..auth.deps import get_current_user
+from ..config import JWT_ACCESS_TOKEN_EXPIRE_MINUTES, JWT_ALGORITHM, JWT_SECRET_KEY
 from ..db.mongodb import get_database
 from ..models import users as user_model
 from ..schemas import users as user_schema
@@ -20,13 +25,32 @@ def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
 
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (
+        expires_delta
+        if expires_delta is not None
+        else timedelta(minutes=JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+    return encoded_jwt
+
+
 @router.get("/", response_model=list[user_schema.UserOut])
-async def read_all_users(db=Depends(get_database)):
+async def read_all_users(
+    db=Depends(get_database),
+    current_user=Depends(get_current_user),
+):
     return await user_model.get_all_users(db)
 
 
 @router.get("/{id}", response_model=user_schema.UserOut)
-async def read_user(id: str, db=Depends(get_database)):
+async def read_user(
+    id: str,
+    db=Depends(get_database),
+    current_user=Depends(get_current_user),
+):
     user = await user_model.get_user_by_id(db, id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -46,7 +70,18 @@ async def login_user(login: UserLogin, db=Depends(get_database)):
 
     # Серіалізуємо користувача перед віддачею (без пароля)
     user = user_model.serialize_user(user_raw)
-    return {"message": "Успішний вхід", "user": user}
+
+    # Створюємо JWT-токен
+    access_token = create_access_token(
+        data={"sub": user["id"], "email": user["email"]}
+    )
+
+    return {
+        "message": "Успішний вхід",
+        "user": user,
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
 
 
 @router.post("/register", response_model=str)
@@ -63,12 +98,25 @@ async def register_user(user: user_schema.UserCreate, db=Depends(get_database)):
 
 
 @router.put("/{id}")
-async def update_user(id: str, user: user_schema.UserUpdate, db=Depends(get_database)):
+async def update_user(
+    id: str,
+    user: user_schema.UserUpdate,
+    db=Depends(get_database),
+    current_user=Depends(get_current_user),
+):
+    if id != current_user.get("id") and id != current_user.get("_id"):
+        raise HTTPException(status_code=403, detail="Можна оновлювати лише власний профіль")
     await user_model.update_user(db, id, {k: v for k, v in user.dict().items() if v is not None})
     return {"message": "User updated successfully"}
 
 
 @router.delete("/{id}")
-async def delete_user(id: str, db=Depends(get_database)):
+async def delete_user(
+    id: str,
+    db=Depends(get_database),
+    current_user=Depends(get_current_user),
+):
+    if id != current_user.get("id") and id != current_user.get("_id"):
+        raise HTTPException(status_code=403, detail="Можна видаляти лише власний акаунт")
     await user_model.delete_user(db, id)
     return {"message": "User deleted successfully"}
