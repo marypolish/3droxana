@@ -117,8 +117,9 @@ async def generate_model_answer(
     try:
         response = await asyncio.to_thread(
             lambda: client.chat.completions.create(
-                model="deepseek-ai/DeepSeek-V3",
+                model="meta-llama/Llama-3.3-70B-Instruct-Turbo",
                 messages=_chat_messages(message, context, attachment_block),
+                max_tokens=1024,
             )
         )
     except Exception as exc:  # noqa: BLE001
@@ -279,9 +280,10 @@ def _stream_worker(
 
     try:
         stream = client.chat.completions.create(
-            model="deepseek-ai/DeepSeek-V3",
+            model="meta-llama/Llama-3.3-70B-Instruct-Turbo",
             messages=_chat_messages(user_message, context, attachment_block),
             stream=True,
+            max_tokens=1024,
         )
         parts: list[str] = []
         for chunk in stream:
